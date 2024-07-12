@@ -76,7 +76,7 @@
                         </div>
                     </div>
 	          </form>
-	          <p class="w-100 text-center">&mdash; &copy; JMTO 2022&mdash;</p>
+	          <p class="w-100 text-center">V1.1 &mdash; &copy; JMTO 2022&mdash;</p>
 	        
 		      </div>
 				</div>
