@@ -13,6 +13,9 @@ class Management extends MY_Controller {
 		$this->load->model('Management_model','management');
 		$this->load->model('Laporan_model','laporan');	
 		$this->load->model('User_model','user');	
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};
 	}
 	
 	public function index()

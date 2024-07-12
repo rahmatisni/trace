@@ -8,6 +8,9 @@ class Dashboard extends MY_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Dashboard_model','dashboard');		
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};
 	}
 	
 	public function index()

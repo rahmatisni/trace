@@ -12,6 +12,9 @@ class Tic extends MY_Controller {
 		$this->load->model('Kendaraan_model','kendaraan');
 		$this->load->model('Formasi_model','formasi');		
 		$this->load->model('Tic_model','tic');	
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};
 	}
 	
 	public function index()

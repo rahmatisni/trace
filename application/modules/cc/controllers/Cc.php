@@ -8,7 +8,10 @@ class Cc extends MY_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Command_model','cc');	
-		$this->load->model('Laporan_model','laporan');		
+		$this->load->model('Laporan_model','laporan');	
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};	
 	}
 	
 	public function index()

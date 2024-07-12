@@ -9,6 +9,9 @@ class Cso extends MY_Controller {
 		parent::__construct();
 		$this->load->model('cso_model','cso');	
 		$this->load->model('Laporan_model','laporan');		
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};
 	}
 	
 	public function index()

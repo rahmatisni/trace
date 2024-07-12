@@ -9,6 +9,9 @@ class Commandcenter extends MY_Controller {
 		parent::__construct();
 		$this->load->model('CommandCenter_model','cc');	
 		$this->load->model('LaporanCommandCenter_model','laporan');		
+		if(!$this->session->npp){
+			redirect(base_url('auth'));
+		};
 	}
 	
 	public function index()
