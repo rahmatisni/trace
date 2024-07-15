@@ -58,10 +58,8 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', 'production');
-	$_SERVER['CI_ENV'] = 'production';
-	// var_dump($_SERVER['CI_ENV']);
-	
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');	
+	var_dump(ENVIRONMENT);
 	
 /*
  *---------------------------------------------------------------
