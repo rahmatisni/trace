@@ -96,6 +96,12 @@
             document.getElementById('sidebar').classList.add('active');
             //document.getElementById('sidebar').classList.toggle('active');
         } else {
+            // const audio = new Audio("https://freesound.org/data/previews/501/501690_1661766-lq.mp3");
+            // audio.play();
+            // setTimeout(() => {
+            //     audio.pause();
+            //     audio.currentTime = 0;
+            // }, 10000); // 10000 milliseconds = 10 seconds
             console.log('tidak ada');
             document.getElementById('sidebar').classList.remove('active');
             //document.getElementById('sidebar').classList.toggle('active');
