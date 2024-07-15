@@ -110,7 +110,7 @@ switch (ENVIRONMENT)
  * use an absolute (full) server path.
  * For more info please see the user guide:
  *
- * https://codeigniter.com/userguide3/general/managing_apps.html
+ * https://codeigniter.com/user_guide/general/managing_apps.html
  *
  * NO TRAILING SLASH!
  */
@@ -193,7 +193,7 @@ switch (ENVIRONMENT)
 	// Set the current directory correctly for CLI requests
 	if (defined('STDIN'))
 	{
-		chdir(dirname(_FILE_));
+		chdir(dirname(__FILE__));
 	}
 
 	if (($_temp = realpath($system_path)) !== FALSE)
@@ -214,7 +214,7 @@ switch (ENVIRONMENT)
 	if ( ! is_dir($system_path))
 	{
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(_FILE_, PATHINFO_BASENAME);
+		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
 		exit(3); // EXIT_CONFIG
 	}
 
@@ -224,13 +224,13 @@ switch (ENVIRONMENT)
  * -------------------------------------------------------------------
  */
 	// The name of THIS file
-	define('SELF', pathinfo(_FILE_, PATHINFO_BASENAME));
+	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
 	// Path to the system directory
 	define('BASEPATH', $system_path);
 
 	// Path to the front controller (this file) directory
-	define('FCPATH', dirname(_FILE_).DIRECTORY_SEPARATOR);
+	define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
 
 	// Name of the "system" directory
 	define('SYSDIR', basename(BASEPATH));
