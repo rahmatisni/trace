@@ -93,7 +93,7 @@ class Tic_model extends CI_Model {
             if( $datax->kendaraan_assigned !='[]')
             {
                 $kend=json_decode($datax->kendaraan_assigned);
-                foreach ($kend as  $row )
+                foreach ($kend as  $row)
                 {
                     $this->db->set('status', 0);
                     $this->db->where('kendaraan_id', $row);
