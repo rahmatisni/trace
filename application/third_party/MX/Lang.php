@@ -1,6 +1,6 @@
 <?php (defined('BASEPATH')) OR exit('No direct script access allowed');
 error_reporting(-1);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 /**
  * Modular Extensions Revamped - HMVC-RV
  *
