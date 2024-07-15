@@ -76,6 +76,9 @@ function Notifikasi(item)
 
     var jumlah = parseInt(a);
     $('.notif').text(jumlah+item);
+    var audio = document.getElementById('notif-sound');
+    audio.play();
+
 }
 
 

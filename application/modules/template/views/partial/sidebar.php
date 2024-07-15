@@ -54,7 +54,7 @@
                     echo('<li class="sidebar-title">Menu Command Center</li>
 
                         <li class="sidebar-item active">
-                            <a href="'.base_url('commandcenter').'" class="sidebar-link">
+                            <a href="'.base_url('cc').'" class="sidebar-link">
                                 <i class="bi bi-stickies-fill"></i>
                                 <span>Laporan Masuk</span>
                             </a>
