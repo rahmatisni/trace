@@ -60,7 +60,7 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  */
 	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
 	$_SERVER['CI_ENV'] = 'production';
-	var_dump($_SERVER['CI_ENV']);
+	// var_dump($_SERVER['CI_ENV']);
 	
 	
 /*
@@ -71,7 +71,9 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-switch (ENVIRONMENT)
+// switch (ENVIRONMENT)
+switch ($_SERVER)
+
 {
 	case 'development':
 		// error_reporting(-1);
