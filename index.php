@@ -1,4 +1,9 @@
 <?php
+require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di proyek Anda
+
+$dotenv = Dotenv\Dotenv::createImmutable(_DIR_);
+$dotenv->load();
+
 /**
  * CodeIgniter
  *
