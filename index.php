@@ -67,12 +67,17 @@ switch (ENVIRONMENT)
 {
 	case 'development':
 		error_reporting(-1);
-		ini_set('display_errors', 1);
+		ini_set('display_errors', 0);
+		ini_set('display_errors','off');
 	break;
 
 	case 'testing':
+		ini_set('display_errors', 0);
+		ini_set('display_errors','off');
 	case 'production':
 		ini_set('display_errors', 0);
+		ini_set('display_errors','off');
+
 		if (version_compare(PHP_VERSION, '5.3', '>='))
 		{
 			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
@@ -84,6 +89,8 @@ switch (ENVIRONMENT)
 	break;
 
 	default:
+		ini_set('display_errors', 0);
+		ini_set('display_errors','off');
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
 		echo 'The application environment is not set correctly.';
 		exit(1); // EXIT_ERROR
@@ -312,6 +319,5 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
-ini_set('display_errors','off');
 
 require_once BASEPATH.'core/CodeIgniter.php';
