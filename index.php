@@ -1,9 +1,4 @@
 <?php
-require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di proyek Anda
-
-// $dotenv = Dotenv\Dotenv::createImmutable(_DIR_);
-// $dotenv->load();
-
 /**
  * CodeIgniter
  *
@@ -58,8 +53,8 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');	
-	
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -68,76 +63,31 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
+switch (ENVIRONMENT)
+{
+	case 'development':
+		error_reporting(-1);
+		ini_set('display_errors', 1);
+	break;
 
- switch (ENVIRONMENT)
- {
-	 case 'development':
-		 error_reporting(-1);
-		 ini_set('display_errors', 1);
-	 break;
- 
-	 case 'testing':
-	 case 'production':
-		
-		 ini_set('display_errors', 0);
-		 if (version_compare(PHP_VERSION, '5.3', '>='))
-		 {
-			error_reporting(0);
-            // ini_set('display_errors', 0);  
+	case 'testing':
+	case 'production':
+		ini_set('display_errors', 0);
+		if (version_compare(PHP_VERSION, '5.3', '>='))
+		{
+			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+		}
+		else
+		{
+			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+		}
+	break;
 
-			//  error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-		 }
-		 else
-		 {
-			error_reporting(0);
-            // ini_set('display_errors', 0);  
-
-			//  error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-		 }
-	 break;
- 
-	 default:
-		 header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		 echo 'The application environment is not set correctly.';
-		 exit(1);// EXIT_ERROR
- }
-
-//  switch (ENVIRONMENT)
-
-// {
-// 	case 'development':
-// 		error_reporting(-1);
-// 		ini_set('display_errors', 0);
-// 		ini_set('display_errors','off');
-// 	break;
-
-// 	case 'testing':
-// 		error_reporting(0);
-
-// 		ini_set('display_errors', 0);
-// 		ini_set('display_errors','off');
-// 	case 'production':
-// 		error_reporting(0);
-// 		ini_set('display_errors', 0);
-// 		ini_set('display_errors','off');
-
-// 		// if (version_compare(PHP_VERSION, '5.3', '>='))
-// 		// {
-// 		// 	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
-// 		// }
-// 		// else
-// 		// {
-// 		// 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
-// 		// }
-// 	break;
-
-// 	default:
-// 		ini_set('display_errors', 0);
-// 		ini_set('display_errors','off');
-// 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-// 		echo 'The application environment is not set correctly.';
-// 		exit(1); // EXIT_ERROR
-// }
+	default:
+		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+		echo 'The application environment is not set correctly.';
+		exit(1); // EXIT_ERROR
+}
 
 /*
  *---------------------------------------------------------------
@@ -160,7 +110,7 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  * use an absolute (full) server path.
  * For more info please see the user guide:
  *
- * https://codeigniter.com/user_guide/general/managing_apps.html
+ * https://codeigniter.com/userguide3/general/managing_apps.html
  *
  * NO TRAILING SLASH!
  */
@@ -243,7 +193,7 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
 	// Set the current directory correctly for CLI requests
 	if (defined('STDIN'))
 	{
-		chdir(dirname(__FILE__));
+		chdir(dirname(_FILE_));
 	}
 
 	if (($_temp = realpath($system_path)) !== FALSE)
@@ -264,7 +214,7 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
 	if ( ! is_dir($system_path))
 	{
 		header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
+		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(_FILE_, PATHINFO_BASENAME);
 		exit(3); // EXIT_CONFIG
 	}
 
@@ -274,13 +224,13 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  * -------------------------------------------------------------------
  */
 	// The name of THIS file
-	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
+	define('SELF', pathinfo(_FILE_, PATHINFO_BASENAME));
 
 	// Path to the system directory
 	define('BASEPATH', $system_path);
 
 	// Path to the front controller (this file) directory
-	define('FCPATH', dirname(__FILE__).DIRECTORY_SEPARATOR);
+	define('FCPATH', dirname(_FILE_).DIRECTORY_SEPARATOR);
 
 	// Name of the "system" directory
 	define('SYSDIR', basename(BASEPATH));
@@ -362,5 +312,4 @@ require_once('vendor/autoload.php'); // Sesuaikan dengan lokasi autoload.php di 
  *
  * And away we go...
  */
-
 require_once BASEPATH.'core/CodeIgniter.php';
