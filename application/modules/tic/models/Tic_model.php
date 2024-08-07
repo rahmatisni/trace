@@ -82,6 +82,16 @@ class Tic_model extends CI_Model
                         $this->db->set('status', 0);
                         $this->db->where('kendaraan_id', $row);
                         $update = $this->db->update('kendaraan');
+                        $logData = array(
+                            'kendaraan_id' => $row,
+                            'status' => $update ? 'success' : 'failure',
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'message' => $update ? 'Update successful' : 'Update failed',
+                            'query' => $this->db->last_query(), // Capture the last executed query
+                            'error' => $this->db->error()['message'] // Capture the last error message, if any 
+                        );
+                
+                        $this->db->insert('log', $logData);
                     }
                 }
 
@@ -98,6 +108,15 @@ class Tic_model extends CI_Model
                         $this->db->set('status', 0);
                         $this->db->where('kendaraan_id', $row);
                         $update = $this->db->update('kendaraan');
+                        $logData = array(
+                            'kendaraan_id' => $row,
+                            'status' => $update ? 'success' : 'failure',
+                            'timestamp' => date('Y-m-d H:i:s'),
+                            'message' => $update ? 'Update successful' : 'Update failed',
+                            'query' => $this->db->last_query(), // Capture the last executed query
+                            'error' => $this->db->error()['message'] // Capture the last error message, if any 
+                        );
+                        $this->db->insert('log', $logData);
                     }
                 }
             }
@@ -500,8 +519,16 @@ class Tic_model extends CI_Model
                 'no_hp' => $data['hp']
             );
 
-            $replace = $this->db->replace('management_petugas', $datas);
-            $result = array('event' => 'update', 'status' => $replace);
+            try {
+                $replace = $this->db->replace('management_petugas', $datas);
+                $result = array('event' => 'update', 'status' => $replace);
+            } catch (Exception $e) {
+                error_log('Database error: ' . $e->getMessage());
+                $result = array('event' => 'update', 'status' => false, 'error' => $e->getMessage());
+            }
+
+            // $replace = $this->db->replace('management_petugas', $datas);
+            // $result = array('event' => 'update', 'status' => $replace);
             return $result;
 
         }
