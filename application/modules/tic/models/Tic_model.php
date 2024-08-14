@@ -86,9 +86,10 @@ class Tic_model extends CI_Model
                             'kendaraan_id' => $row,
                             'status' => $update ? 'success' : 'failure',
                             'timestamp' => date('Y-m-d H:i:s'),
-                            'message' => $update ? 'Update successful' : 'Update failed',
+                            'message' => $update ? 'Update successful on closing job' : 'Update failed on closing job',
                             'query' => $this->db->last_query(), // Capture the last executed query
-                            'error' => $this->db->error()['message'] // Capture the last error message, if any 
+                            'error' => $this->db->error()['message'], // Capture the last error message, if any 
+                            'laporan_id' => $data['laporan_id']
                         );
                 
                         $this->db->insert('log', $logData);
@@ -112,9 +113,11 @@ class Tic_model extends CI_Model
                             'kendaraan_id' => $row,
                             'status' => $update ? 'success' : 'failure',
                             'timestamp' => date('Y-m-d H:i:s'),
-                            'message' => $update ? 'Update successful' : 'Update failed',
+                            'message' => $update ? 'Update successful on closing job' : 'Update failed on closing job',
                             'query' => $this->db->last_query(), // Capture the last executed query
-                            'error' => $this->db->error()['message'] // Capture the last error message, if any 
+                            'error' => $this->db->error()['message'], // Capture the last error message, if any 
+                            'laporan_id' => $data['laporan_id']
+
                         );
                         $this->db->insert('log', $logData);
                     }
@@ -282,6 +285,18 @@ class Tic_model extends CI_Model
                     $this->db->set('status', 1);
                     $this->db->where('kendaraan_id', $row);
                     $update = $this->db->update('kendaraan');
+
+                    $logData = array(
+                        'kendaraan_id' => $row,
+                        'status' => $update ? 'success' : 'failure',
+                        'timestamp' => date('Y-m-d H:i:s'),
+                        'message' => $update ? 'Update successful on re-asgin job' : 'Update failed on re-asgin job',
+                        'query' => $this->db->last_query(), // Capture the last executed query
+                        'error' => $this->db->error()['message'], // Capture the last error message, if any 
+                        'laporan_id' => $data['id']
+                    );
+            
+                    $this->db->insert('log', $logData);
 
                     //select petugas  id in data petugas
                     $query = $this->db->query("select * from data_petugas where isdeleted=0 and ruas_id='" . $data['ruas_id'] . "' and kendaraan_id=" . $row);
