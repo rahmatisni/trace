@@ -71,9 +71,9 @@
                                 <span class="checkmark"></span>
                             </label>
                         </div>
-                        <div class="w-50 text-md-right">
+                        <!-- <div class="w-50 text-md-right">
                             <a href="https://wa.me/6282288082106" style="color: #fff">Need Help !</a>
-                        </div>
+                        </div> -->
                     </div>
 	          </form>
 	          <p class="w-100 text-center">V1.1 &mdash; &copy; JMTO 2022&mdash;</p>
