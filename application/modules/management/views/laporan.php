@@ -338,7 +338,7 @@ $( document ).ready(function() {
 				//$('#loading-body').hide();
 			},	
 			"ajax": {
-				"url": base_url+"management/ajax_list_laporan_management",
+				"url": base_url + 'management/ajax_list_laporan_management',
 				"type": "POST",
 				"data": function (data) {	
                         data.status = $('#status').val();
