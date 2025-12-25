@@ -50,30 +50,29 @@ class Laporan_model extends CI_Model {
 			$this->db->where('list_laporan.laporan_ruas_id', $this->input->post('ruasi'));
         }
 
-
-        // $i = 0;
+        $i = 0;
 	
-		// foreach ($this->select_column_n as $item) // loop column 
-		// {
-		// 	if($_POST['search']['value']) // if datatable send POST for search
-		// 	{
+		foreach ($this->select_column_n as $item) // loop column 
+		{
+			if($_POST['search']['value']) // if datatable send POST for search
+			{
 				
-		// 		if($i===0) // first loop
-		// 		{
-		// 			 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-		// 			 $this->db->like($item, $_POST['search']['value']);
-		// 		}
-		// 		else
-		// 		{
-		// 			 $this->db->or_like($item, $_POST['search']['value']);
-		// 		}
+				if($i===0) // first loop
+				{
+					 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					 $this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					 $this->db->or_like($item, $_POST['search']['value']);
+				}
 
-		// 		if(count($this->select_column_n) - 1 == $i) //last loop
-		// 			 $this->db->group_end(); //close bracket
-		// 	}
+				if(count($this->select_column_n) - 1 == $i) //last loop
+					 $this->db->group_end(); //close bracket
+			}
 
-		// 	$i++;
-		// }
+			$i++;
+		}
        
         
         if(isset($_POST["order"]))
@@ -89,6 +88,7 @@ class Laporan_model extends CI_Model {
 
     public function make_datatables()
     {
+        return 0;
         $this->make_query();
         if($_POST["length"] != -1)
         {
