@@ -544,9 +544,6 @@ class Management extends MY_Controller {
 	public function ajax_list_laporan_management()
 	{
 		$list = $this->laporan->make_datatables();
-		var_dump($list); 
-		exit;
-
 		$data = array(); 
         
         foreach ($list as $item) {
