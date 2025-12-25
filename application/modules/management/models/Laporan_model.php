@@ -88,9 +88,8 @@ class Laporan_model extends CI_Model {
 
     public function make_datatables()
     {
-        var_dump(0);
-        die();
-        $this->make_query();
+       return ('haha');
+        // $this->make_query();
         if($_POST["length"] != -1)
         {
              $this->db->limit($_POST['length'], $_POST['start']);
