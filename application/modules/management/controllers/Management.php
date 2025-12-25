@@ -543,8 +543,6 @@ class Management extends MY_Controller {
 
 	public function ajax_list_laporan_management()
 	{
-		var_dump(1);
-		die;
 		$list = $this->laporan->make_datatables();
 		$data = array(); 
         

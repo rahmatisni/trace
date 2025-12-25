@@ -29,7 +29,7 @@ class Laporan_model extends CI_Model {
         $this->db->join('user_management b', 'b.user_id = list_laporan.medium_created_by','left');
         $this->db->join('user_management c', 'c.user_id = list_laporan.high_created_by','left');
         $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url','left');
-      
+    
 
         if($this->input->post('status')!='0')
 		{
@@ -84,7 +84,8 @@ class Laporan_model extends CI_Model {
         {
              $this->db->order_by("laporan_id","DESC");
         }
-        
+        // nanti dicommand
+        $this->db->limit(100);
     }
 
     public function make_datatables()
