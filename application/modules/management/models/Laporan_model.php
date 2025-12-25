@@ -88,7 +88,7 @@ class Laporan_model extends CI_Model {
 
     public function make_datatables()
     {
-       return ('haha');
+       return (5);
         // $this->make_query();
         if($_POST["length"] != -1)
         {
