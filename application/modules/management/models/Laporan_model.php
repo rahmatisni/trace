@@ -29,60 +29,61 @@ class Laporan_model extends CI_Model {
         $this->db->join('user_management b', 'b.user_id = list_laporan.medium_created_by','left');
         $this->db->join('user_management c', 'c.user_id = list_laporan.high_created_by','left');
         $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url','left');
+        $this->db->limit(1);
 
-        // if($this->input->post('status')!='0')
-		// {
-		// 	$this->db->where_in('list_laporan.status_id', $this->input->post('status'));
-        // }else
-        // {
-        //     $acc = array(5,6);
-        //     $this->db->where_in('list_laporan.status_id ', $acc);
-        // }
+        if($this->input->post('status')!='0')
+		{
+			$this->db->where_in('list_laporan.status_id', $this->input->post('status'));
+        }else
+        {
+            $acc = array(5,6);
+            $this->db->where_in('list_laporan.status_id ', $acc);
+        }
 
-        // if($this->input->post('rating')!='0')
-		// {
-		// 	$this->db->where('tbl_feedback.feedback_rate', $this->input->post('rating'));
-        // }
+        if($this->input->post('rating')!='0')
+		{
+			$this->db->where('tbl_feedback.feedback_rate', $this->input->post('rating'));
+        }
 
-        // if($this->input->post('ruasi')!='0')
-		// {
-		// 	$this->db->where('list_laporan.laporan_ruas_id', $this->input->post('ruasi'));
-        // }
+        if($this->input->post('ruasi')!='0')
+		{
+			$this->db->where('list_laporan.laporan_ruas_id', $this->input->post('ruasi'));
+        }
 
 
-        // $i = 0;
+        $i = 0;
 	
-		// foreach ($this->select_column_n as $item) // loop column 
-		// {
-		// 	if($_POST['search']['value']) // if datatable send POST for search
-		// 	{
+		foreach ($this->select_column_n as $item) // loop column 
+		{
+			if($_POST['search']['value']) // if datatable send POST for search
+			{
 				
-		// 		if($i===0) // first loop
-		// 		{
-		// 			 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-		// 			 $this->db->like($item, $_POST['search']['value']);
-		// 		}
-		// 		else
-		// 		{
-		// 			 $this->db->or_like($item, $_POST['search']['value']);
-		// 		}
+				if($i===0) // first loop
+				{
+					 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+					 $this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					 $this->db->or_like($item, $_POST['search']['value']);
+				}
 
-		// 		if(count($this->select_column_n) - 1 == $i) //last loop
-		// 			 $this->db->group_end(); //close bracket
-		// 	}
+				if(count($this->select_column_n) - 1 == $i) //last loop
+					 $this->db->group_end(); //close bracket
+			}
 
-		// 	$i++;
-		// }
+			$i++;
+		}
        
         
-        // if(isset($_POST["order"]))
-        // {
-        //      $this->db->order_by($this->order_column[$_POST['order']['0']['column']],$_POST['order']['0']['dir']);
-        // }
-        // else
-        // {
-        //      $this->db->order_by("laporan_id","DESC");
-        // }
+        if(isset($_POST["order"]))
+        {
+             $this->db->order_by($this->order_column[$_POST['order']['0']['column']],$_POST['order']['0']['dir']);
+        }
+        else
+        {
+             $this->db->order_by("laporan_id","DESC");
+        }
     }
 
     public function make_datatables()
