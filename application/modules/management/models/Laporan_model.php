@@ -29,7 +29,7 @@ class Laporan_model extends CI_Model {
         $this->db->join('user_management b', 'b.user_id = list_laporan.medium_created_by','left');
         $this->db->join('user_management c', 'c.user_id = list_laporan.high_created_by','left');
         $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url','left');
-        $this->db->limit(10);
+        $this->db->limit(1);
 
         if($this->input->post('status')!='0')
 		{
@@ -106,9 +106,10 @@ class Laporan_model extends CI_Model {
 
     public function get_all_data()
     {
-         $this->db->select('*');
-         $this->db->from($this->table);
-        return  $this->db->count_all_results();
+        return  0;
+        //  $this->db->select('*');
+        //  $this->db->from($this->table);
+        // return  $this->db->count_all_results();
     }
 
     
