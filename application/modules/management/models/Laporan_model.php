@@ -74,124 +74,189 @@ class Laporan_model extends CI_Model
         'status_laporan_reference.status_name'
     );
 
-    public function make_query()
-    {
 
-        $this->db->select($this->select_column);
+
+
+
+
+    public function make_query($forCount = false)
+    {
+        // ambil POST sekali
+        $status = $this->input->post('status');
+        $rating = $this->input->post('rating');
+        $ruasi = $this->input->post('ruasi');
+        $search = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+
+        // SELECT: untuk count cukup 1 kolom kecil
+        if ($forCount) {
+            $this->db->select('list_laporan.laporan_id', false);
+        } else {
+            $this->db->select($this->select_column);
+        }
+
         $this->db->from($this->table);
+
+        // JOIN (tetap dipakai karena search juga menyentuh ruas/kendala/status/feedback)
         $this->db->join('management_ruas', 'management_ruas.ruas_id = list_laporan.laporan_ruas_id', 'left');
         $this->db->join('management_jenis_kendala', 'management_jenis_kendala.kendala_id = list_laporan.laporan_problem_category', 'left');
         $this->db->join('status_laporan_reference', 'status_laporan_reference.status_id = list_laporan.status_id', 'left');
         $this->db->join('user_management a', 'a.user_id = list_laporan.created_by', 'left');
         $this->db->join('user_management b', 'b.user_id = list_laporan.medium_created_by', 'left');
         $this->db->join('user_management c', 'c.user_id = list_laporan.high_created_by', 'left');
-        // $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url','left');
+        $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url', 'left');
 
-        $rating = $this->input->post('rating');
-
-        if ($rating != '0') {
-            // kalau filter rating aktif, pakai INNER JOIN + kondisi rating di join (lebih cepat)
-            $this->db->join(
-                'tbl_feedback',
-                'tbl_feedback.blast_url = list_laporan.blast_url AND tbl_feedback.feedback_rate = ' . $this->db->escape($rating),
-                'inner'
-            );
+        // FILTER status
+        // Catatan: status dari form bisa array. Pastikan benar.
+        if (!empty($status) && $status != '0') {
+            if (is_array($status))
+                $status = array_map('intval', $status);
+            $this->db->where_in('list_laporan.status_id', $status);
         } else {
-            // kalau rating tidak difilter, tetap left join (atau boleh di-skip kalau kolom feedback gak dipakai)
-            $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url', 'left');
+            $this->db->where_in('list_laporan.status_id', [5, 6]); // hilangkan spasi di field
         }
 
-
-
-
-        if ($this->input->post('status') != '0') {
-            $this->db->where_in('list_laporan.status_id', $this->input->post('status'));
-        } else {
-            $acc = array(5, 6);
-            $this->db->where_in('list_laporan.status_id ', $acc);
+        // FILTER rating
+        if (!empty($rating) && $rating != '0') {
+            $this->db->where('tbl_feedback.feedback_rate', (int) $rating);
         }
 
-        // if($this->input->post('rating')!='0')
-        // {
-        // 	$this->db->where('tbl_feedback.feedback_rate', $this->input->post('rating'));
-        // }
-
-        if ($this->input->post('ruasi') != '0') {
-            $this->db->where('list_laporan.laporan_ruas_id', $this->input->post('ruasi'));
+        // FILTER ruas
+        if (!empty($ruasi) && $ruasi != '0') {
+            $this->db->where('list_laporan.laporan_ruas_id', (int) $ruasi);
         }
 
-
-        $i = 0;
-
-        foreach ($this->select_column_n as $item) // loop column 
-        {
-            // if($_POST['search']['value']) // if datatable send POST for search
-            // {
-
-            // 	if($i===0) // first loop
-            // 	{
-            // 		 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-            // 		 $this->db->like($item, $_POST['search']['value']);
-            // 	}
-            // 	else
-            // 	{
-            // 		 $this->db->or_like($item, $_POST['search']['value']);
-            // 	}
-
-            // 	if(count($this->select_column_n) - 1 == $i) //last loop
-            // 		 $this->db->group_end(); //close bracket
-            // }
-
-            $search = trim($_POST['search']['value'] ?? '');
-
-            if ($search !== '' && strlen($search) >= 3) {
-                $i = 0;
-                foreach ($this->select_column_n as $item) {
-                    if ($i === 0) {
-                        $this->db->group_start();
-                        $this->db->like($item, $search);
-                    } else {
-                        $this->db->or_like($item, $search);
-                    }
-
-                    if (count($this->select_column_n) - 1 == $i) {
-                        $this->db->group_end();
-                    }
-                    $i++;
-                }
+        // GLOBAL SEARCH
+        if ($search !== '') {
+            $this->db->group_start();
+            $i = 0;
+            foreach ($this->select_column_n as $item) {
+                // lebih cepat: prefix search (opsional)
+                if ($i === 0)
+                    $this->db->like($item, $search, 'after');
+                else
+                    $this->db->or_like($item, $search, 'after');
+                $i++;
             }
-
-            $i++;
+            $this->db->group_end();
         }
 
+        // ORDER (untuk count, order tidak perlu)
+        if (!$forCount) {
+            if (isset($_POST["order"])) {
+                $colIdx = (int) $_POST['order']['0']['column'];
+                $dir = $_POST['order']['0']['dir'] === 'asc' ? 'asc' : 'desc';
 
-        if (isset($_POST["order"])) {
-            $this->db->order_by($this->order_column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-        } else {
-            $this->db->order_by("laporan_id", "DESC");
-        }
-
-        if (isset($_POST['length']) && $_POST['length'] != -1) {
-            $this->db->limit((int) $_POST['length'], (int) $_POST['start']);
+                // PENTING: pastikan order_column berisi nama kolom valid (tanpa "AS ...")
+                $orderBy = $this->order_column[$colIdx] ?? 'list_laporan.laporan_id';
+                $this->db->order_by($orderBy, $dir);
+            } else {
+                $this->db->order_by("list_laporan.laporan_id", "DESC");
+            }
         }
     }
 
     public function make_datatables()
     {
-        $this->make_query();
-        if ($_POST["length"] != -1) {
-            $this->db->limit($_POST['length'], $_POST['start']);
+        $this->make_query(false);
+        if ((int) $_POST["length"] != -1) {
+            $this->db->limit((int) $_POST['length'], (int) $_POST['start']);
         }
-        $query = $this->db->get();
-        return $query->result();
+        return $this->db->get()->result();
     }
 
     public function get_filtered_data()
     {
-        $this->make_query();
-        $query = $this->db->get();
-        return $query->num_rows();
+        $this->make_query(true);
+        return $this->db->count_all_results(); // jauh lebih cepat
     }
+
+    // public function make_query()
+    // {
+
+    //     $this->db->select($this->select_column);
+    //     $this->db->from($this->table);
+    //     $this->db->join('management_ruas', 'management_ruas.ruas_id = list_laporan.laporan_ruas_id','left');
+    //     $this->db->join('management_jenis_kendala', 'management_jenis_kendala.kendala_id = list_laporan.laporan_problem_category','left');
+    //     $this->db->join('status_laporan_reference', 'status_laporan_reference.status_id = list_laporan.status_id','left');
+    //     $this->db->join('user_management a', 'a.user_id = list_laporan.created_by','left');
+    //     $this->db->join('user_management b', 'b.user_id = list_laporan.medium_created_by','left');
+    //     $this->db->join('user_management c', 'c.user_id = list_laporan.high_created_by','left');
+    //     $this->db->join('tbl_feedback', 'tbl_feedback.blast_url = list_laporan.blast_url','left');
+
+
+    //     if($this->input->post('status')!='0')
+    // 	{
+    // 		$this->db->where_in('list_laporan.status_id', $this->input->post('status'));
+    //     }else
+    //     {
+    //         $acc = array(5,6);
+    //         $this->db->where_in('list_laporan.status_id ', $acc);
+    //     }
+
+    //     if($this->input->post('rating')!='0')
+    // 	{
+    // 		$this->db->where('tbl_feedback.feedback_rate', $this->input->post('rating'));
+    //     }
+
+    //     if($this->input->post('ruasi')!='0')
+    // 	{
+    // 		$this->db->where('list_laporan.laporan_ruas_id', $this->input->post('ruasi'));
+    //     }
+
+
+    //     $i = 0;
+
+    // 	foreach ($this->select_column_n as $item) // loop column 
+    // 	{
+    // 		if($_POST['search']['value']) // if datatable send POST for search
+    // 		{
+
+    // 			if($i===0) // first loop
+    // 			{
+    // 				 $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+    // 				 $this->db->like($item, $_POST['search']['value']);
+    // 			}
+    // 			else
+    // 			{
+    // 				 $this->db->or_like($item, $_POST['search']['value']);
+    // 			}
+
+    // 			if(count($this->select_column_n) - 1 == $i) //last loop
+    // 				 $this->db->group_end(); //close bracket
+    // 		}
+
+    // 		$i++;
+    // 	}
+
+
+    //     if(isset($_POST["order"]))
+    //     {
+    //          $this->db->order_by($this->order_column[$_POST['order']['0']['column']],$_POST['order']['0']['dir']);
+    //     }
+    //     else
+    //     {
+    //          $this->db->order_by("laporan_id","DESC");
+    //     }
+
+    // }
+
+    // public function make_datatables()
+    // {
+    //     $this->make_query();
+    //     if($_POST["length"] != -1)
+    //     {
+    //          $this->db->limit($_POST['length'], $_POST['start']);
+    //     }
+    //     $query=  $this->db->get();
+    //     return $query->result();
+    // }
+
+    // public function get_filtered_data()
+    // {
+    //     $this->make_query();
+    //     $query= $this->db->get();
+    //     return $query->num_rows();
+    // }
 
     public function get_all_data()
     {
